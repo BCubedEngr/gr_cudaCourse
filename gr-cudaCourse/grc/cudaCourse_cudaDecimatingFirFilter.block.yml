@@ -1,0 +1,41 @@
+id: cudaCourse_cudaDecimatingFirFilter
+label: cudaDecimatingFirFilter
+category: '[cudaCourse]'
+
+parameters:
+-   id: blockSize
+    label: Cuda Block Size
+    dtype: int
+    default: '256'
+-   id: chunkSize
+    label: GNURadio Chunk Size
+    dtype: int
+    default: '1'
+-   id: decimationFactor
+    label: Decimation Factor
+    dtype: int
+    default: '1'
+-   id: taps
+    label: Taps
+    dtype: float_vector
+
+inputs:
+-   domain: stream
+    dtype: complex
+    vlen: '1'
+
+outputs:
+-   domain: stream
+    dtype: complex
+    vlen: '1'
+
+templates:
+  imports: from gnuradio import cudaCourse
+  make: cudaCourse.cudaDecimatingFirFilter(${blockSize}, ${chunkSize}, ${decimationFactor}, ${taps})
+
+cpp_templates:
+  includes: ['#include <gnuradio/cudaDecimatingFirFilter.h>']
+  declarations: 'cudaCourse::cudaDecimatingFirFilter::sptr ${id};'
+  make: 'this->${id} = cuda::cudaDecimatingFirFilter::make(${blockSize}, ${chunkSize}, ${decimationFactor}, ${taps});'
+
+file_format: 1

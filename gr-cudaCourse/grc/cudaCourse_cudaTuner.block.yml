@@ -1,0 +1,50 @@
+id: cudaCourse_cudaTuner
+label: cudaTuner
+category: '[cudaCourse]'
+
+parameters:
+-   id: blockSize
+    label: Cuda Block Size
+    dtype: int
+    default: '256'
+-   id: chunkSize
+    label: GNURadio Chunk Size
+    dtype: int
+    default: '1'
+-   id: sampleRate
+    label: Sampling Rate (samples/sec)
+    dtype: int
+    default: '32000'
+-   id: freq
+    label: Tuning Frequency (Hz)
+    dtype: int
+    default: '0'
+-   id: phase
+    label: Initial Tuning Phase (Radians)
+    dtype: float
+    default: '0.0'
+
+inputs:
+-   domain: cuda
+    dtype: ${complex}
+    vlen: ${chunkSize}
+
+outputs:
+-   domain: cuda
+    dtype: ${complex}
+    vlen: ${chunkSize}
+
+asserts:
+-   ${chunkSize > 0}
+
+
+templates:
+    imports: from gnuradio import cudaCourse
+    make: cudaCourse.cudaTuner(${blockSize}, ${chunkSize}, ${sampleRate}, ${freq}, ${phase})
+
+cpp_templates:
+    includes: ['#include <gnuradio/cudaTuner.h>']
+    declarations: 'cudaCourse::cudaTuner::sptr ${id};'
+    make: 'this->${id} = cuda::cudaTuner::make(${blockSize}, ${chunkSize}, ${sampleRate}, ${freq}, ${phase});'
+
+file_format: 1
